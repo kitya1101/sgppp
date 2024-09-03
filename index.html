@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>프레젠테이션</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+      }
+      #presentation-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .media {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none; /* 기본적으로 모든 미디어를 숨김 */
+        border: none; /* iframe의 기본 테두리를 제거 */
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box; /* 여백 및 패딩 포함 계산 */
+      }
+      .visible {
+        display: block; /* 선택된 미디어만 보여줌 */
+      }
+      .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+        border: none;
+        height: 10%;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 10;
+        font-size: 24px;
+      }
+      #prev-button {
+        left: 0;
+      }
+      #next-button {
+        right: 0;
+      }
+      /* 이미지 컨테이너 */
+      #image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-color: black; /* 컨테이너 배경을 검정색으로 설정 */
+      }
+      /* 이미지 스타일 */
+      #image-container img {
+        max-width: 100%; /* 이미지의 가로를 최대 100%로 설정 */
+        max-height: 100%; /* 이미지의 세로를 최대 100%로 설정 */
+        object-fit: contain; /* 이미지 비율을 유지하며 화면에 맞춤 */
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: contain; /* iframe 콘텐츠의 비율을 유지하며 화면에 맞춤 */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="presentation-container">
+      <div id="image-container" class="media">
+        <img id="image-slide" />
+      </div>
+      <iframe id="iframe-slide" class="media" loading="lazy"></iframe>
+      <button id="prev-button" class="nav-button">◀</button>
+      <button id="next-button" class="nav-button">▶</button>
+    </div>
+
+    <script>
+      const pages = [
+        { type: "image", src: "images/1.svg" },
+        { type: "image", src: "images/2.svg" },
+        { type: "image", src: "images/3.svg" },
+        { type: "iframe", src: "godot/5/index.html" },
+        { type: "iframe", src: "godot/6/index.html" },
+        { type: "iframe", src: "godot/7/index.html" },
+        { type: "iframe", src: "godot/8/index.html" },
+        { type: "iframe", src: "godot/9/index.html" },
+        // 추가 페이지
+      ];
+      let currentPage = 0;
+
+      const imageContainer = document.getElementById("image-container");
+      const imageSlide = document.getElementById("image-slide");
+      const iframeSlide = document.getElementById("iframe-slide");
+
+      function showPage(pageIndex) {
+        const page = pages[pageIndex];
+        imageContainer.classList.remove("visible");
+        iframeSlide.classList.remove("visible");
+
+        if (page.type === "image") {
+          imageSlide.src = page.src;
+          imageContainer.classList.add("visible");
+          iframeSlide.src = ""; // iframe 로딩 비우기
+        } else if (page.type === "iframe") {
+          iframeSlide.src = page.src;
+          iframeSlide.classList.add("visible");
+        }
+      }
+
+      document.getElementById("prev-button").addEventListener("click", () => {
+        if (currentPage > 0) {
+          currentPage--;
+          showPage(currentPage);
+        }
+      });
+
+      document.getElementById("next-button").addEventListener("click", () => {
+        if (currentPage < pages.length - 1) {
+          currentPage++;
+          showPage(currentPage);
+        }
+      });
+
+      // 첫 페이지 로드
+      showPage(currentPage);
+    </script>
+  </body>
+</html>
